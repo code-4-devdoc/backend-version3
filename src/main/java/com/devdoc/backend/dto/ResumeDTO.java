@@ -17,4 +17,5 @@ public class ResumeDTO {
     private LocalDateTime createdAt;
     private List<LanguageDTO> languages;
     private List<AwardDTO> awards;
+    private List<CertificateDTO> certificates;
 }

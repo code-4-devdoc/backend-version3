@@ -1,16 +1,11 @@
 package com.devdoc.backend.service;
 
 import com.devdoc.backend.dto.AwardDTO;
+import com.devdoc.backend.dto.CertificateDTO;
 import com.devdoc.backend.dto.LanguageDTO;
 import com.devdoc.backend.dto.ResumeDTO;
-import com.devdoc.backend.model.Award;
-import com.devdoc.backend.model.Language;
-import com.devdoc.backend.model.Resume;
-import com.devdoc.backend.model.UserEntity;
-import com.devdoc.backend.repository.AwardRepository;
-import com.devdoc.backend.repository.LanguageRepository;
-import com.devdoc.backend.repository.ResumeRepository;
-import com.devdoc.backend.repository.UserRepository;
+import com.devdoc.backend.model.*;
+import com.devdoc.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +28,9 @@ public class ResumeService {
 
     @Autowired
     private AwardRepository awardRepository;
+
+    @Autowired
+    private CertificateRepository certificateRepository;
 
     // Language 항목 데이터 저장 또는 업데이트
     @Transactional
@@ -96,6 +94,39 @@ public class ResumeService {
         award.ifPresent(awardRepository::delete);
     }
 
+    // Certificate 항목 데이터 저장 또는 업데이트
+    @Transactional
+    public CertificateDTO saveOrUpdateCertificate(int resumeId, CertificateDTO certificateDTO) {
+        Optional<Resume> optionalResume = resumeRepository.findById(resumeId);
+        if (optionalResume.isPresent()) {
+            Resume resume = optionalResume.get();
+            // 자격증 목록 중 하나의 항목 불러오기 (없으면 새로 생성)
+            Certificate certificate = certificateRepository.findByIdAndResumeId(certificateDTO.getId(), resumeId)
+                    .orElse(new Certificate());
+
+            boolean isNew = (certificate.getId() == null);
+
+            // 항목에 대한 정보 입력
+            certificate.setCertificateName(certificateDTO.getCertificateName());
+            certificate.setIssuer(certificateDTO.getIssuer());
+            certificate.setIssueDate(certificateDTO.getIssueDate());
+            certificate.setResume(resume);
+
+            // 입력한 내용을 저장
+            Certificate savedCertificate = certificateRepository.save(certificate);
+
+            return new CertificateDTO(savedCertificate.getId(), savedCertificate.getCertificateName(), savedCertificate.getIssuer(), savedCertificate.getIssueDate());
+        }
+        throw new RuntimeException("Resume not found");
+    }
+
+    // Certificate 항목 데이터 삭제
+    @Transactional
+    public void deleteCertificate(int resumeId, int certificateId) {
+        Optional<Certificate> certificate = certificateRepository.findByIdAndResumeId(certificateId, resumeId);
+        certificate.ifPresent(certificateRepository::delete);
+    }
+
     // 이력서 저장
     @Transactional
     public void saveResume(int resumeId, ResumeDTO resumeDTO) {
@@ -113,6 +144,11 @@ public class ResumeService {
                     .map(awardDTO -> new Award(awardDTO.getId(), awardDTO.getAwardName(), awardDTO.getAwardingInstitution(), awardDTO.getDate(), awardDTO.getDescription(), resume))
                     .collect(Collectors.toList());
             resume.setAwards(awards);
+
+            List<Certificate> certificates = resumeDTO.getCertificates().stream()
+                    .map(certificateDTO -> new Certificate(certificateDTO.getId(), certificateDTO.getCertificateName(), certificateDTO.getIssuer(), certificateDTO.getIssueDate(), resume))
+                    .collect(Collectors.toList());
+            resume.setCertificates(certificates);
 
             resumeRepository.save(resume);
         }
@@ -132,7 +168,11 @@ public class ResumeService {
                     .map(award -> new AwardDTO(award.getId(), award.getAwardName(), award.getAwardingInstitution(), award.getDate(), award.getDescription()))
                     .collect(Collectors.toList());
 
-            return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), languageDTOs, awardDTOs);
+            List<CertificateDTO> certificateDTOs = resume.getCertificates().stream()
+                    .map(certificate -> new CertificateDTO(certificate.getId(), certificate.getCertificateName(), certificate.getIssuer(), certificate.getIssueDate()))
+                    .collect(Collectors.toList());
+
+            return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), languageDTOs, awardDTOs, certificateDTOs);
         }
         return null;
     }
@@ -155,13 +195,18 @@ public class ResumeService {
                 .map(award -> new AwardDTO(award.getId(), award.getAwardName(), award.getAwardingInstitution(), award.getDate(), award.getDescription()))
                 .collect(Collectors.toList());
 
-        return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), languages, awards);
+        List<CertificateDTO> certificates = certificateRepository.findByResumeId(resume.getId())
+                .stream()
+                .map(certificate -> new CertificateDTO(certificate.getId(), certificate.getCertificateName(), certificate.getIssuer(), certificate.getIssueDate()))
+                .collect(Collectors.toList());
+
+        return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), languages, awards, certificates);
     }
 
     // 특정 사용자의 모든 이력서 조회
     public List<ResumeDTO> getAllResumesByUser(String userId) {
         List<Resume> resumes = resumeRepository.findByUserId(userId);
-        return resumes.stream().map(resume -> new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), null, null)).collect(Collectors.toList());
+        return resumes.stream().map(resume -> new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), null, null, null)).collect(Collectors.toList());
     }
 
     // 새로운 이력서 생성
@@ -195,7 +240,7 @@ public class ResumeService {
             Resume resume = optionalResume.get();
             resume.setTitle(newTitle);
             resumeRepository.save(resume);
-            return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), null, null);
+            return new ResumeDTO(resume.getId(), resume.getTitle(), resume.getCreatedAt(), null, null, null);
         }
         return null;
     }

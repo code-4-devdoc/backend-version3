@@ -2,6 +2,7 @@
 package com.devdoc.backend.controller;
 
 import com.devdoc.backend.dto.AwardDTO;
+import com.devdoc.backend.dto.CertificateDTO;
 import com.devdoc.backend.dto.LanguageDTO;
 import com.devdoc.backend.dto.ResumeDTO;
 import com.devdoc.backend.model.Resume;
@@ -94,7 +95,39 @@ public class ResumeController {
 
     /* Award 관련 메소드 끝 */
 
+    // Certificate 데이터 저장
+    @PostMapping("/{resumeId}/certificates")
+    public ResponseEntity<CertificateDTO> saveOrUpdateCertificate(@PathVariable int resumeId, @RequestBody CertificateDTO certificateDTO) {
+        try {
+            // 입력 받은 내용을 CertificateDTO를 통해 전달
+            CertificateDTO updatedCertificate = resumeService.saveOrUpdateCertificate(resumeId, certificateDTO);
+            return ResponseEntity.ok(updatedCertificate); // 업데이트한 Certificate 내용을 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
+    // Certificate 데이터 삭제
+    @DeleteMapping("/{resumeId}/certificates/{certificateId}")
+    public ResponseEntity<Void> deleteCertificate(@PathVariable int resumeId, @PathVariable int certificateId) {
+        try {
+            resumeService.deleteCertificate(resumeId, certificateId); // 해당 Certificate 항목을 저장소에서 삭제
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Certificate 데이터 수정
+    @PutMapping("/{resumeId}/certificates")
+    public ResponseEntity<CertificateDTO> updateCertificate(@PathVariable int resumeId, @RequestBody CertificateDTO certificateDTO) {
+        try {
+            CertificateDTO updatedCertificate = resumeService.saveOrUpdateCertificate(resumeId, certificateDTO);
+            return ResponseEntity.ok(updatedCertificate);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     // 이력서 저장
     @PostMapping("/{resumeId}/save")
