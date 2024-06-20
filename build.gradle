@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devdoc'
 version = '0.0.1'
-sourceCompatibility = '1.8'
+// sourceCompatibility = '1.8'
 
 java {
 	toolchain {
@@ -70,3 +70,7 @@ test {
 	useJUnitPlatform()
 }
 
+// 환경변수를 사용해 개발환경 or 배포환경 구분
+bootRun {
+    systemProperty("spring.profiles.active", activeProfile)
+}
