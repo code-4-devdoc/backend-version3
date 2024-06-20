@@ -1,10 +1,7 @@
 // ResumeController.java
 package com.devdoc.backend.controller;
 
-import com.devdoc.backend.dto.AwardDTO;
-import com.devdoc.backend.dto.CertificateDTO;
-import com.devdoc.backend.dto.LanguageDTO;
-import com.devdoc.backend.dto.ResumeDTO;
+import com.devdoc.backend.dto.*;
 import com.devdoc.backend.model.Resume;
 import com.devdoc.backend.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +125,115 @@ public class ResumeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    /* Skill 관련 메소드 시작 */
+
+    // Skill 데이터 저장 또는 수정
+    @PostMapping("/{resumeId}/skills")
+    public ResponseEntity<SkillDTO> saveOrUpdateSkill(@PathVariable int resumeId, @RequestBody SkillDTO skillDTO) {
+        try {
+            SkillDTO updatedSkill = resumeService.saveOrUpdateSkill(resumeId, skillDTO);
+            return ResponseEntity.ok(updatedSkill); // 수정된 Skill 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Skill 데이터 삭제
+    @DeleteMapping("/{resumeId}/skills/{skillId}")
+    public ResponseEntity<Void> deleteSkill(@PathVariable int resumeId, @PathVariable int skillId) {
+        try {
+            resumeService.deleteSkill(resumeId, skillId);
+            return ResponseEntity.noContent().build(); //Skill 데이터 삭제 후 no content 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Skill 데이터 수정
+    @PutMapping("/{resumeId}/skills")
+    public ResponseEntity<SkillDTO> updateSkill(@PathVariable int resumeId, @RequestBody SkillDTO skillDTO) {
+        try {
+            SkillDTO updatedSkill = resumeService.saveOrUpdateSkill(resumeId, skillDTO);
+            return ResponseEntity.ok(updatedSkill); // 업데이트된 Skill 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /* Skill 관련 메소드 끝 */
+    /* Career 관련 메소드 시작 */
+
+    // Career 데이터 저장 또는 수정
+    @PostMapping("/{resumeId}/careers")
+    public ResponseEntity<CareerDTO> saveOrUpdateCareer(@PathVariable int resumeId, @RequestBody CareerDTO careerDTO) {
+        try {
+            CareerDTO updatedCareer = resumeService.saveOrUpdateCareer(resumeId, careerDTO);
+            return ResponseEntity.ok(updatedCareer); // 수정된 Career 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Career 데이터 삭제
+    @DeleteMapping("/{resumeId}/careers/{careerId}")
+    public ResponseEntity<Void> deleteCareer(@PathVariable int resumeId, @PathVariable int careerId) {
+        try {
+            resumeService.deleteCareer(resumeId, careerId);
+            return ResponseEntity.noContent().build(); //Career 데이터 삭제 후 no content 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Career 데이터 수정
+    @PutMapping("/{resumeId}/careers")
+    public ResponseEntity<CareerDTO> updateCareer(@PathVariable int resumeId, @RequestBody CareerDTO careerDTO) {
+        try {
+            CareerDTO updatedCareer = resumeService.saveOrUpdateCareer(resumeId, careerDTO);
+            return ResponseEntity.ok(updatedCareer); // 업데이트된 Career 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /* Career 관련 메소드 끝 */
+    /* Project 관련 메소드 시작 */
+
+    // Project 데이터 저장 또는 수정
+    @PostMapping("/{resumeId}/projects")
+    public ResponseEntity<ProjectDTO> saveOrUpdateProject(@PathVariable int resumeId, @RequestBody ProjectDTO projectDTO) {
+        try {
+            ProjectDTO updatedProject = resumeService.saveOrUpdateProject(resumeId, projectDTO);
+            return ResponseEntity.ok(updatedProject); // 수정된 Project 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Project 데이터 삭제
+    @DeleteMapping("/{resumeId}/projects/{projectId}")
+    public ResponseEntity<Void> deleteProject(@PathVariable int resumeId, @PathVariable int projectId) {
+        try {
+            resumeService.deleteProject(resumeId, projectId);
+            return ResponseEntity.noContent().build(); //Project 데이터 삭제 후 no content 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Project 데이터 수정
+    @PutMapping("/{resumeId}/projects")
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable int resumeId, @RequestBody ProjectDTO projectDTO) {
+        try {
+            ProjectDTO updatedProject = resumeService.saveOrUpdateProject(resumeId, projectDTO);
+            return ResponseEntity.ok(updatedProject); // 업데이트된 Project 데이터 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /* Project 관련 메소드 끝 */
 
     // 이력서 저장
     @PostMapping("/{resumeId}/save")

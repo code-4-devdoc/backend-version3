@@ -36,6 +36,15 @@ public class Resume {
     @OneToMany(mappedBy = "resume", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Certificate> certificates; // 이력서에 포함된 Certificate 목록
 
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Skill> skills; 
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Career> careers; 
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Project> projects; 
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
