@@ -1,9 +1,15 @@
+/*
 plugins {
 	id 'java'
 	// WebSecurityConfigurerAdapter 이용을 위해 2.X 버전으로 변경.
 	id 'org.springframework.boot' version '2.5.3'
 	id 'io.spring.dependency-management' version '1.1.5'
 }
+*/
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'com.devdoc'
 version = '0.0.1'
