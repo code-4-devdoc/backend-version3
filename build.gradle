@@ -1,15 +1,9 @@
-/*
 plugins {
 	id 'java'
 	// WebSecurityConfigurerAdapter 이용을 위해 2.X 버전으로 변경.
 	id 'org.springframework.boot' version '2.5.3'
 	id 'io.spring.dependency-management' version '1.1.5'
 }
-*/
-
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.devdoc'
 version = '0.0.1'
@@ -78,7 +72,21 @@ test {
 	useJUnitPlatform()
 }
 
-// 환경변수를 사용해 개발환경 or 배포환경 구분
-bootRun {
-    systemProperty("spring.profiles.active", activeProfile)
+// Spring Boot 플러그인 설정 (2.x 버전)
+springBoot {
+    buildInfo {
+        properties {
+            additionalProperties['spring.profiles.active'] = activeProfile
+        }
+    }
 }
+
+// JAR 파일 빌드 설정
+bootJar {
+    archiveFileName = 'backend-0.0.1.jar'
+    enabled = true
+	mainClassName = 'com.devdoc.backend.BackendApplication'
+}
+
+// build task에 bootJar task 추가
+build.dependsOn bootJar
