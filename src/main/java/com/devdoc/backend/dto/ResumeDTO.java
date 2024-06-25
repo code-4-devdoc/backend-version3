@@ -17,4 +17,8 @@ public class ResumeDTO {
     private LocalDateTime createdAt;
     private List<LanguageDTO> languages;
     private List<AwardDTO> awards;
+    private List<CertificateDTO> certificates;
+    private List<SkillDTO> skills;
+    private List<CareerDTO> careers;
+    private List<ProjectDTO> projects;
 }

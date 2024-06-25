@@ -32,10 +32,23 @@ public class Resume {
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Award> awards; // 이력서에 포함된 Award 목록
 
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Certificate> certificates; // 이력서에 포함된 Award 목록
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Project> projects; // 이력서에 포함된 Award 목록
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Career> careers; // 이력서에 포함된 Award 목록
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Skill> skills; // 이력서에 포함된 Award 목록
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
 }
 
 

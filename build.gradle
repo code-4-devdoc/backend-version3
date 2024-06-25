@@ -19,10 +19,13 @@ configurations {
 	}
 }
 
-
 repositories {
 	mavenCentral()
 }
+
+// 환경변수를 사용해 개발환경 or 배포환경 구분
+// def activeProfile = System.getenv("SPRING_PROFILES_ACTIVE") ?: "dev"
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
